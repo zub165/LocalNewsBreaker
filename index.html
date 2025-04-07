@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalNewsBreaker - Community-Powered News</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .logo span {
+            color: var(--accent-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .auth-buttons button {
+            padding: 0.5rem 1rem;
+            margin-left: 0.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .login-btn {
+            background-color: transparent;
+            color: white;
+            border: 1px solid white !important;
+        }
+        
+        .signup-btn {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .hero {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 2rem;
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://via.placeholder.com/1200x400');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .cta-button:hover {
+            background-color: #c0392b;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+        
+        .news-section {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .news-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .news-image {
+            height: 180px;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .news-content {
+            padding: 1.5rem;
+        }
+        
+        .news-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .truth-index {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .high-truth {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: var(--success-color);
+        }
+        
+        .medium-truth {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .low-truth {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--accent-color);
+        }
+        
+        .news-excerpt {
+            margin-bottom: 1rem;
+            color: #555;
+        }
+        
+        .read-more {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .submit-news {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 3rem;
+        }
+        
+        .submit-news h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            margin: 0 1rem;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .logo {
+                margin-bottom: 1rem;
+            }
+            
+            nav ul {
+                margin-bottom: 1rem;
+            }
+            
+            .auth-buttons {
+                margin-top: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Local<span>NewsBreaker</span></div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#news">Latest News</a></li>
+                <li><a href="#submit">Submit News</a></li>
+                <li><a href="#archive">Archive</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <button class="login-btn" id="loginBtn">Login</button>
+            <button class="signup-btn" id="signupBtn">Sign Up</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" id="home">
+            <h1>Your Community, Your News</h1>
+            <p>LocalNewsBreaker empowers residents to report and share breaking news in their area, with AI-powered verification to ensure credibility.</p>
+            <a href="#submit" class="cta-button">Report News Now</a>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📥</div>
+                <h3>Story Submission</h3>
+                <p>Anonymous or logged-in users can easily submit news stories with optional multimedia attachments.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>AI Verification</h3>
+                <p>Our AI assesses each story and assigns a Truth Index score based on credibility factors.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📰</div>
+                <h3>Daily Newspaper</h3>
+                <p>Verified stories are compiled into a professional PDF newspaper available for download.</p>
+            </div>
+        </section>
+
+        <section class="news-section" id="news">
+            <h2 class="section-title">Today's Top Stories</h2>
+            <div class="news-grid">
+                <div class="news-card">
+                    <div class="news-image" style="background-image: url('https://via.placeholder.com/300x180')"></div>
+                    <div class="news-content">
+                        <h3 class="news-title">New Community Center Opens Downtown</h3>
+                        <div class="news-meta">
+                            <span>Downtown • 2 hours ago</span>
+                            <span class="truth-index high-truth">Truth: 92</span>
+                        </div>
+                        <p class="news-excerpt">The long-awaited community center finally opened its doors this morning with a ribbon-cutting ceremony attended by...</p>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+                <div class="news-card">
+                    <div class="news-image" style="background-image: url('https://via.placeholder.com/300x180')"></div>
+                    <div class="news-content">
+                        <h3 class="news-title">Power Outage Affects Northside Homes</h3>
+                        <div class="news-meta">
+                            <span>Northside • 4 hours ago</span>
+                            <span class="truth-index medium-truth">Truth: 76</span>
+                        </div>
+                        <p class="news-excerpt">Approximately 200 homes experienced a power outage this afternoon due to a transformer failure. Utility crews are...</p>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+                <div class="news-card">
+                    <div class="news-image" style="background-image: url('https://via.placeholder.com/300x180')"></div>
+                    <div class="news-content">
+                        <h3 class="news-title">Local High School Wins State Championship</h3>
+                        <div class="news-meta">
+                            <span>West End • 6 hours ago</span>
+                            <span class="truth-index high-truth">Truth: 95</span>
+                        </div>
+                        <p class="news-excerpt">The Jefferson High basketball team brought home the state championship trophy after a thrilling overtime victory...</p>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="submit-news" id="submit">
+            <h2>Submit Your News Story</h2>
+            <form id="newsForm">
+                <div class="form-group">
+                    <label for="title">Headline</label>
+                    <input type="text" id="title" name="title" placeholder="Brief, descriptive headline" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" placeholder="Where did this happen?" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Story Details</label>
+                    <textarea id="description" name="description" placeholder="Provide all the details you know (who, what, when, where, why)" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="media">Upload Media (Optional)</label>
+                    <input type="file" id="media" name="media" accept="image/*,video/*">
+                </div>
+                <div class="form-group">
+                    <label for="anonymous">Submit Anonymously</label>
+                    <input type="checkbox" id="anonymous" name="anonymous">
+                </div>
+                <button type="submit" class="submit-btn">Submit Story</button>
+            </form>
+        </section>
+
+        <section class="news-section" id="archive">
+            <h2 class="section-title">News Archive</h2>
+            <div class="news-grid">
+                <div class="news-card">
+                    <div class="news-image" style="background-image: url('https://via.placeholder.com/300x180')"></div>
+                    <div class="news-content">
+                        <h3 class="news-title">City Council Approves New Park</h3>
+                        <div class="news-meta">
+                            <span>Citywide • 2 days ago</span>
+                            <span class="truth-index high-truth">Truth: 89</span>
+                        </div>
+                        <p class="news-excerpt">After months of debate, the city council voted unanimously to approve funding for a new 10-acre park on the south side...</p>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+                <div class="news-card">
+                    <div class="news-image" style="background-image: url('https://via.placeholder.com/300x180')"></div>
+                    <div class="news-content">
+                        <h3 class="news-title">Local Restaurant Receives National Award</h3>
+                        <div class="news-meta">
+                            <span>Downtown • 3 days ago</span>
+                            <span class="truth-index high-truth">Truth: 94</span>
+                        </div>
+                        <p class="news-excerpt">Mario's Bistro was named one of America's top 100 restaurants by Food & Wine magazine, bringing national attention to...</p>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+                <div class="news-card">
+                    <div class="news-image" style="background-image: url('https://via.placeholder.com/300x180')"></div>
+                    <div class="news-content">
+                        <h3 class="news-title">Traffic Disruptions Expected Next Week</h3>
+                        <div class="news-meta">
+                            <span>Eastside • 4 days ago</span>
+                            <span class="truth-index medium-truth">Truth: 81</span>
+                        </div>
+                        <p class="news-excerpt">Road construction on Main Street between 5th and 8th Avenues will begin Monday, with lane closures expected to cause...</p>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="#" class="cta-button">View Full Archive</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">How It Works</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact</a>
+        </div>
+        <p class="copyright">© 2023 LocalNewsBreaker. All rights reserved.</p>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Login</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                </div>
+                <button type="submit" class="submit-btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal" id="signupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create Account</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupConfirm">Confirm Password</label>
+                    <input type="password" id="signupConfirm" name="confirm" required>
+                </div>
+                <button type="submit" class="submit-btn">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal functionality
+        const loginBtn = document.getElementById('loginBtn');
+        const signupBtn = document.getElementById('signupBtn');
+        const loginModal = document.getElementById('loginModal');
+        const signupModal = document.getElementById('signupModal');
+        const closeButtons = document.querySelectorAll('.close-modal');
+        
+        loginBtn.addEventListener('click', () => {
+            loginModal.style.display = 'flex';
+        });
+        
+        signupBtn.addEventListener('click', () => {
+            signupModal.style.display = 'flex';
+        });
+        
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                loginModal.style.display = 'none';
+                signupModal.style.display = 'none';
+            });
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.style.display = 'none';
+            }
+            if (e.target === signupModal) {
+                signupModal.style.display = 'none';
+            }
+        });
+        
+        // Form submission
+        const newsForm = document.getElementById('newsForm');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        
+        newsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thank you for your submission! Our team will review your story.');
+            newsForm.reset();
+        });
+        
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Login functionality will be implemented in the full application.');
+            loginForm.reset();
+            loginModal.style.display = 'none';
+        });
+        
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Account creation will be implemented in the full application.');
+            signupForm.reset();
+            signupModal.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
