@@ -11,9 +11,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
@@ -21,9 +19,6 @@ concurrency:
 
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -44,15 +39,11 @@ jobs:
           if [ -f package-lock.json ]; then npm ci; else npm install; fi
           npm run build
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy website/ to gh-pages branch
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          path: website
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-        timeout-minutes: 10
+          folder: website
+          branch: gh-pages
+          clean: true
+          single-commit: true
+          commit-message: 'Deploy website from GitHub Actions'
