@@ -1,0 +1,29 @@
+name: Refresh public news feed
+
+# Free HTTPS "read backend" on GitHub Pages — syncs from GoDaddy API.
+on:
+  schedule:
+    - cron: '0 */6 * * *'   # every 6 hours UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-feed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build feed.json from GoDaddy API
+        run: bash tool/update_public_feed.sh
+
+      - name: Publish to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: website
+          branch: gh-pages
+          clean: false
+          single-commit: true
+          commit-message: 'Refresh feed.json from API'
