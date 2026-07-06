@@ -117,6 +117,16 @@
       </tr>
     </table>
 
+    <h2>Latest published stories</h2>
+    <p>Live feed snapshot (updated daily). Each item includes publisher and publication date.</p>
+    <div id="live-feed" class="contact-card" style="border-color:#ccc;">
+      <p>Loading feed…</p>
+    </div>
+    <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--muted);">
+      Full app feed: <a href="app/index.html">Web app</a> ·
+      API: <a href="http://208.109.215.53:8004/api/v1/news/?status=published">JSON feed</a>
+    </p>
+
     <h2>News &amp; editorial contact</h2>
     <p>
       LocalNewsBreaker publishes community-submitted stories and licensed RSS headlines.
@@ -145,5 +155,34 @@
       </div>
     </div>
   </footer>
+  <script>
+    (async function () {
+      const el = document.getElementById('live-feed');
+      try {
+        const res = await fetch('feed.json');
+        const data = await res.json();
+        const stories = data.stories || [];
+        if (!stories.length) {
+          el.innerHTML = '<p>No stories in the last 30 days.</p>';
+          return;
+        }
+        const updated = data.updated_at ? new Date(data.updated_at).toLocaleString() : 'unknown';
+        el.innerHTML =
+          '<p><strong>Feed updated:</strong> ' + updated + ' · <strong>' + stories.length + '</strong> stories</p><ul>' +
+          stories.slice(0, 8).map(function (s) {
+            const pub = s.publisher || s.source || 'Unknown';
+            const when = s.published_at || s.created_at || '';
+            const title = s.title || 'Untitled';
+            const link = s.external_url || (s.media_urls && s.media_urls[0]) || '#';
+            return '<li style="margin:0.6rem 0;"><strong>' + title + '</strong><br>' +
+              '<span style="color:#5c5c5c;font-size:0.9rem;">Publisher: ' + pub + ' · ' + when + '</span> ' +
+              (link !== '#' ? '<a href="' + link + '" target="_blank" rel="noopener">Original</a>' : '') +
+              '</li>';
+          }).join('') + '</ul>';
+      } catch (e) {
+        el.innerHTML = '<p>Could not load feed.json. Email <a href="mailto:zub165@yahoo.com">zub165@yahoo.com</a> for support.</p>';
+      }
+    })();
+  </script>
 </body>
 </html>

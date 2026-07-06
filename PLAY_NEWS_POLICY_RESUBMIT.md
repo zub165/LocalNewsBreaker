@@ -8,6 +8,16 @@ Google flagged the app as **News & Magazines** but found:
 2. **No publisher or date** visible on articles
 3. **Contact** — needs clear in-app email (social/GitHub alone is not enough)
 
+## Fixes in v1.0.43+46
+
+| Requirement | Fix |
+|-------------|-----|
+| Fresh content (< 30 days) | Release builds only show stories **≤ 30 days old** |
+| Empty feed on review | API **retry**, GitHub **feed.json** fallback, World tab defaults to **All** |
+| Publisher + date | On every card and story detail + **external_url** link |
+| Website proof | https://zub165.github.io/LocalNewsBreaker/contact.html shows **live feed.json** |
+| In-app contact | Settings → Contact us (`zub165@yahoo.com`) |
+
 ## Fixes in v1.0.42+45
 
 | Requirement | Fix |
@@ -21,7 +31,7 @@ Google flagged the app as **News & Magazines** but found:
 
 ## Before resubmitting in Play Console
 
-1. Upload **AAB build 45** (`mobile/build/app/outputs/bundle/release/app-release.aab`)
+1. Upload **AAB build 46** (`mobile/build/app/outputs/bundle/release/app-release.aab`)
 2. **Store listing → Contact details** — set email: `zub165@yahoo.com`
 3. **App content → News apps → Entity details** — contact URL:
    `https://zub165.github.io/LocalNewsBreaker/contact.html`

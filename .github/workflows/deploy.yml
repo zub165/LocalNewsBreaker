@@ -39,6 +39,9 @@ jobs:
           if [ -f package-lock.json ]; then npm ci; else npm install; fi
           npm run build
 
+      - name: Update public feed.json for News policy
+        run: bash tool/update_public_feed.sh
+
       - name: Deploy website/ to gh-pages branch
         uses: JamesIves/github-pages-deploy-action@v4
         with:
