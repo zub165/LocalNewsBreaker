@@ -3,7 +3,7 @@ import { truthLabel, truthPercent, storyPublisher, storyDate, type Story } from 
 interface Props {
   story: Story;
   saved?: boolean;
-  onToggleSave?: (id: number) => void;
+  onToggleSave?: (id: number, story: Story) => void;
 }
 
 export function TruthBadge({ value }: { value: number | null | undefined }) {
@@ -47,7 +47,7 @@ export function StoryCard({ story, saved, onToggleSave }: Props) {
           Read more
         </a>
         {onToggleSave ? (
-          <button type="button" className={`btn btn-ghost btn-sm save-btn${saved ? ' saved' : ''}`} onClick={() => onToggleSave(story.id)}>
+          <button type="button" className={`btn btn-ghost btn-sm save-btn${saved ? ' saved' : ''}`} onClick={() => onToggleSave(story.id, story)}>
             {saved ? '\u2605 Saved' : '\u2606 Save'}
           </button>
         ) : null}

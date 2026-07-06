@@ -10,26 +10,39 @@ export function MyStoriesPage() {
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [withdrawingId, setWithdrawingId] = useState<number | null>(null);
+
+  async function loadStories() {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await api.mySubmissions();
+      setStories(data);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to load submissions');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     if (!user) return;
-    let cancelled = false;
-    (async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await api.mySubmissions();
-        if (!cancelled) setStories(data);
-      } catch (e) {
-        if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load submissions');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
+    void loadStories();
   }, [user]);
+
+  async function withdrawStory(id: number) {
+    if (!window.confirm('Withdraw this submission?')) return;
+    setWithdrawingId(id);
+    setError(null);
+    try {
+      await api.deleteOrRejectStory(id, 'rejected');
+      setStories((prev) => prev.filter((s) => s.id !== id));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Withdraw failed');
+    } finally {
+      setWithdrawingId(null);
+    }
+  }
 
   if (!user) {
     return (
@@ -62,7 +75,20 @@ export function MyStoriesPage() {
       ) : (
         <div className="story-grid">
           {stories.map((s) => (
-            <StoryCard key={s.id} story={s} />
+            <div key={s.id}>
+              <StoryCard story={s} />
+              {s.status === 'pending' ? (
+                <button
+                  type="button"
+                  className="btn btn-outline btn-sm"
+                  style={{ marginTop: '0.5rem' }}
+                  disabled={withdrawingId === s.id}
+                  onClick={() => void withdrawStory(s.id)}
+                >
+                  {withdrawingId === s.id ? 'Withdrawing…' : 'Withdraw submission'}
+                </button>
+              ) : null}
+            </div>
           ))}
         </div>
       )}

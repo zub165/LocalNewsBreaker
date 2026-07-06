@@ -8,6 +8,7 @@ const KEYS = {
   feedCache: 'lnb_feed_cache',
   feedCachedAt: 'lnb_feed_cached_at',
   savedIds: 'lnb_saved_story_ids',
+  savedStories: 'lnb_saved_stories',
   prefs: 'lnb_prefs',
 } as const;
 
@@ -70,14 +71,27 @@ export const hybridStore = {
     return readJson<number[]>(KEYS.savedIds, []);
   },
 
-  toggleSaved(id: number): boolean {
+  getSavedStories(): Story[] {
+    const map = readJson<Record<string, Story>>(KEYS.savedStories, {});
+    return Object.values(map).sort((a, b) => {
+      const da = new Date(a.published_at || a.created_at || 0).getTime();
+      const db = new Date(b.published_at || b.created_at || 0).getTime();
+      return db - da;
+    });
+  },
+
+  toggleSaved(id: number, story?: Story): boolean {
     const ids = new Set(this.getSavedIds());
+    const map = readJson<Record<string, Story>>(KEYS.savedStories, {});
     if (ids.has(id)) {
       ids.delete(id);
+      delete map[String(id)];
     } else {
       ids.add(id);
+      if (story) map[String(id)] = story;
     }
     writeJson(KEYS.savedIds, [...ids]);
+    writeJson(KEYS.savedStories, map);
     return ids.has(id);
   },
 

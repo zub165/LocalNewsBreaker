@@ -1,12 +1,17 @@
 import { useMemo, useState } from 'react';
 import { StoryCard } from '../components/StoryCard';
 import { hybridStore } from '../storage/hybridStore';
+import type { Story } from '../types/story';
 
 export function SavedPage() {
   const [tick, setTick] = useState(0);
   const stories = useMemo(() => {
     const ids = new Set(hybridStore.getSavedIds());
-    return hybridStore.getCachedFeed().filter((s) => ids.has(s.id));
+    const byId = new Map<number, Story>();
+    for (const story of [...hybridStore.getCachedFeed(), ...hybridStore.getSavedStories()]) {
+      if (ids.has(story.id)) byId.set(story.id, story);
+    }
+    return [...byId.values()];
   }, [tick]);
 
   return (
@@ -28,7 +33,7 @@ export function SavedPage() {
               story={s}
               saved
               onToggleSave={() => {
-                hybridStore.toggleSaved(s.id);
+                hybridStore.toggleSaved(s.id, s);
                 setTick((n) => n + 1);
               }}
             />

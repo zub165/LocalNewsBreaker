@@ -58,8 +58,8 @@ export function FeedPage() {
     void load();
   }, [load]);
 
-  const toggleSave = (id: number) => {
-    hybridStore.toggleSaved(id);
+  const toggleSave = (id: number, story: Story) => {
+    hybridStore.toggleSaved(id, story);
     setSavedTick((n) => n + 1);
   };
 

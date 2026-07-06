@@ -9,6 +9,7 @@ interface AuthContextValue {
   register: (username: string, password: string, email?: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -46,9 +47,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
+  const deleteAccount = useCallback(async () => {
+    await api.deleteAccount();
+    setUser(null);
+  }, []);
+
   const value = useMemo(
-    () => ({ user, login, register, logout, refreshUser }),
-    [user, login, register, logout, refreshUser],
+    () => ({ user, login, register, logout, refreshUser, deleteAccount }),
+    [user, login, register, logout, refreshUser, deleteAccount],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

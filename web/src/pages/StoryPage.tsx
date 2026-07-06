@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { api } from '../api/client';
 import { TruthBadge } from '../components/StoryCard';
 import { hybridStore } from '../storage/hybridStore';
-import type { Story } from '../types/story';
+import { storyPublisher, storyDate, type Story } from '../types/story';
 
 export function StoryPage() {
   const { id } = useParams();
@@ -55,7 +55,9 @@ export function StoryPage() {
   if (error && !story) return <div className="alert alert-error">{error}</div>;
   if (!story) return <div className="empty-state">Story not found.</div>;
 
-  const date = story.published_at || story.created_at;
+  const date = storyDate(story);
+  const publisher = storyPublisher(story);
+  const externalUrl = story.external_url || story.media_urls?.[0];
 
   return (
     <article className="story-detail">
@@ -63,6 +65,7 @@ export function StoryPage() {
       <div className="story-meta">
         <span className="badge badge-cat">{story.category}</span>
         <TruthBadge value={story.truth_index} />
+        <span title="Publisher">{'\uD83D\uDCF0'} {publisher}</span>
         {story.location ? <span>{'\uD83D\uDCCD'} {story.location}</span> : null}
         {date ? <span>{'\uD83D\uDCC5'} {new Date(date).toLocaleString()}</span> : null}
         <span className={`badge ${story.status === 'published' ? 'badge-published' : story.status === 'pending' ? 'badge-pending' : 'badge-status'}`}>
@@ -70,6 +73,13 @@ export function StoryPage() {
         </span>
       </div>
       <h1>{story.title}</h1>
+      {externalUrl ? (
+        <p style={{ marginTop: '0.75rem' }}>
+          <a href={externalUrl} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm">
+            View original article
+          </a>
+        </p>
+      ) : null}
       {story.truth_rationale ? (
         <div className="status-banner">
           {'\uD83E\uDD16'} <strong>Truth Index rationale:</strong> {story.truth_rationale}
@@ -93,7 +103,7 @@ export function StoryPage() {
           type="button"
           className={`btn btn-outline save-btn${saved ? ' saved' : ''}`}
           onClick={() => {
-            hybridStore.toggleSaved(story.id);
+            hybridStore.toggleSaved(story.id, story);
             setSaved(hybridStore.isSaved(story.id));
           }}
         >

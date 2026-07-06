@@ -154,17 +154,27 @@ export const api = {
   },
 
   async fetchStory(id: number): Promise<Story> {
-    if (isHttpsWithHttpApi()) {
+    if (isHttpsWithHttpApi() || isGitHubPagesHost()) {
+      const cached = hybridStore.getCachedFeed().find((s) => s.id === id);
+      if (cached) return cached;
+      const saved = hybridStore.getSavedStories().find((s) => s.id === id);
+      if (saved) return saved;
       const { stories } = await api.fetchNews({ limit: 100 });
       const hit = stories.find((s) => s.id === id);
       if (hit) return hit;
       throw new Error('Story not found in public feed');
     }
-    return request<Story>([`/api/v1/stories/${id}/`, `/api/stories/${id}`]);
+    try {
+      return await request<Story>([`/api/v1/stories/${id}/`, `/api/stories/${id}`]);
+    } catch {
+      const cached = hybridStore.getCachedFeed().find((s) => s.id === id);
+      if (cached) return cached;
+      throw new Error('Story not found');
+    }
   },
 
   async searchNews(q: string, category?: string): Promise<Story[]> {
-    if (isHttpsWithHttpApi()) {
+    if (isHttpsWithHttpApi() || isGitHubPagesHost()) {
       const { stories } = await api.fetchNews({ category, limit: 100 });
       const needle = q.toLowerCase();
       return stories.filter(
@@ -239,6 +249,11 @@ export const api = {
   async mySubmissions(): Promise<Story[]> {
     const payload = await request<unknown>(['/api/v1/news/my/', '/api/news/my/']);
     return asStories(payload);
+  },
+
+  async deleteAccount(): Promise<void> {
+    await request(['/api/v1/users/me/', '/api/users/me/'], { method: 'DELETE' });
+    hybridStore.clearSession();
   },
 
   async deleteOrRejectStory(id: number, status: 'rejected' | 'published' = 'rejected'): Promise<{ success: boolean }> {

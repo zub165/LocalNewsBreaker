@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
@@ -14,7 +15,25 @@ const NAV_ITEMS: { to: string; end?: boolean; label: string }[] = [
 ];
 
 export function Layout({ darkMode, onToggleDark }: LayoutProps) {
-  const { user, logout } = useAuth();
+  const { user, logout, deleteAccount } = useAuth();
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [accountMsg, setAccountMsg] = useState<string | null>(null);
+
+  async function onDeleteAccount() {
+    if (!window.confirm('Delete your account permanently? This cannot be undone.')) return;
+    setDeleting(true);
+    setAccountMsg(null);
+    try {
+      await deleteAccount();
+      setAccountMsg('Account deleted.');
+      setAccountOpen(false);
+    } catch (e) {
+      setAccountMsg(e instanceof Error ? e.message : 'Delete failed');
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   return (
     <div className="app-shell">
@@ -39,10 +58,23 @@ export function Layout({ darkMode, onToggleDark }: LayoutProps) {
             </button>
             {user ? (
               <>
-                <span className="username">{user.username}</span>
-                <button type="button" className="btn btn-outline btn-sm" onClick={() => void logout()}>
-                  Log out
+                <button type="button" className="btn btn-ghost btn-sm username" onClick={() => setAccountOpen((v) => !v)}>
+                  {user.username}
                 </button>
+                {accountOpen ? (
+                  <div className="account-panel">
+                    <p className="hint">Signed in as <strong>{user.username}</strong></p>
+                    <button type="button" className="btn btn-outline btn-sm" onClick={() => void logout()}>
+                      Log out
+                    </button>
+                    <button type="button" className="btn btn-outline btn-sm" disabled={deleting} onClick={() => void onDeleteAccount()}>
+                      {deleting ? 'Deleting…' : 'Delete account'}
+                    </button>
+                    <a className="btn btn-ghost btn-sm" href="/LocalNewsBreaker/delete-account.html" target="_blank" rel="noreferrer">
+                      Delete policy
+                    </a>
+                  </div>
+                ) : null}
               </>
             ) : (
               <NavLink className="btn btn-primary btn-sm" to="/login">
@@ -54,6 +86,7 @@ export function Layout({ darkMode, onToggleDark }: LayoutProps) {
       </header>
 
       <main className="app-main">
+        {accountMsg ? <div className="alert alert-info">{accountMsg}</div> : null}
         <Outlet />
       </main>
 

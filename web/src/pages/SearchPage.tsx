@@ -13,8 +13,8 @@ export function SearchPage() {
   const [searched, setSearched] = useState(false);
   const [savedTick, setSavedTick] = useState(0);
 
-  const toggleSave = (id: number) => {
-    hybridStore.toggleSaved(id);
+  const toggleSave = (id: number, story: Story) => {
+    hybridStore.toggleSaved(id, story);
     setSavedTick((n) => n + 1);
   };
 

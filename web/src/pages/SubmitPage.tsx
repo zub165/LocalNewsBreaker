@@ -60,8 +60,8 @@ export function SubmitPage() {
         </label>
         <label>
           Story details *
-          <span className="hint">What happened? Include key facts and context (min. 40 characters)</span>
-          <textarea value={body} onChange={(e) => setBody(e.target.value)} required minLength={40} placeholder="Describe the event in detail\u2026" />
+          <span className="hint">What happened? Include key facts and context (min. 20 characters)</span>
+          <textarea value={body} onChange={(e) => setBody(e.target.value)} required minLength={20} placeholder="Describe the event in detail\u2026" />
           <span className="hint" style={{ textAlign: 'right' }}>{body.length} characters</span>
         </label>
         <label>
