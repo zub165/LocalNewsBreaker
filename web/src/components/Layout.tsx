@@ -54,10 +54,10 @@ export function Layout({ darkMode, onToggleDark }: LayoutProps) {
       </header>
 
       <main className="app-main">
-        {!import.meta.env.DEV && window.location.protocol === 'https:' && (import.meta.env.VITE_API_BASE_URL || '').startsWith('http:') ? (
+        {!import.meta.env.DEV && window.location.protocol === 'https:' && (import.meta.env.VITE_API_BASE_URL || 'http://208.109.215.53:8004').startsWith('http:') ? (
           <div className="alert alert-info">
-            Web app is on HTTPS but the API is HTTP. Browsers may block requests until you set{' '}
-            <code>VITE_API_BASE_URL</code> to an HTTPS endpoint (Nginx + SSL on your VPS).
+            HTTPS web app loads news from <strong>feed.json</strong> (publisher + dates, last 30 days).
+            Direct API calls are blocked by the browser until you add SSL (HTTPS) on the VPS API.
           </div>
         ) : null}
         <Outlet />
@@ -66,6 +66,7 @@ export function Layout({ darkMode, onToggleDark }: LayoutProps) {
       <footer className="site-footer">
         <a href="/LocalNewsBreaker/">Marketing site</a>
         <a href="/LocalNewsBreaker/privacy.html">Privacy</a>
+        <a href="/LocalNewsBreaker/contact.html">Contact</a>
         <a href="/LocalNewsBreaker/support.html">Support</a>
       </footer>
     </div>

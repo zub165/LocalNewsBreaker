@@ -1,4 +1,4 @@
-import { truthLabel, truthPercent, type Story } from '../types/story';
+import { truthLabel, truthPercent, storyPublisher, storyDate, type Story } from '../types/story';
 
 interface Props {
   story: Story;
@@ -18,13 +18,15 @@ export function TruthBadge({ value }: { value: number | null | undefined }) {
 
 export function StoryCard({ story, saved, onToggleSave }: Props) {
   const excerpt = story.body.length > 180 ? `${story.body.slice(0, 180)}\u2026` : story.body;
-  const date = story.published_at || story.created_at;
+  const date = storyDate(story);
+  const publisher = storyPublisher(story);
 
   return (
     <article className="story-card">
       <div className="story-meta">
         <span className="badge badge-cat">{story.category}</span>
         <TruthBadge value={story.truth_index} />
+        <span title="Publisher">{'\uD83D\uDCF0'} {publisher}</span>
         {story.location ? (
           <span>
             {'\uD83D\uDCCD'} {story.location}

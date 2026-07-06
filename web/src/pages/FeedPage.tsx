@@ -25,19 +25,24 @@ export function FeedPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [fromCache, setFromCache] = useState(false);
+  const [fromPublicFeed, setFromPublicFeed] = useState(false);
   const [savedTick, setSavedTick] = useState(0);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await api.fetchNews({
+      const { stories: data, source } = await api.fetchNews({
         category: category === 'all' ? undefined : category,
         limit: 50,
       });
       setStories(data);
       hybridStore.cacheFeed(data);
       setFromCache(false);
+      setFromPublicFeed(source === 'public');
+      if (source === 'public') {
+        setError('Showing HTTPS public feed (last 30 days). Live API requires SSL on the VPS for direct browser access.');
+      }
     } catch (e) {
       const cached = hybridStore.getCachedFeed();
       if (cached.length) {
@@ -85,7 +90,7 @@ export function FeedPage() {
         </button>
       </div>
 
-      {error ? <div className={`alert ${fromCache ? 'alert-info' : 'alert-error'}`}>{error}</div> : null}
+      {error ? <div className={`alert ${fromCache || fromPublicFeed ? 'alert-info' : 'alert-error'}`}>{error}</div> : null}
 
       {loading && !stories.length ? (
         <SkeletonGrid />
