@@ -3,7 +3,7 @@
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
-API_URL="${API_BASE_URL:-http://208.109.215.53:8004}"
+API_URL="${API_BASE_URL:-https://citizen-api.mywaitime.com}"
 
 echo "Running store compliance check..."
 bash tool/verify_store_compliance.sh

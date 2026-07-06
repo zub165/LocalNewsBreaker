@@ -1,0 +1,61 @@
+---
+description: Require support.html, privacy.html, delete-account page, and in-app Delete Account before store builds
+alwaysApply: true
+---
+
+# Store compliance — web pages + in-app delete (required every build)
+
+Before any **release build** (AAB, IPA, or store submission), ensure all items below exist. Do not ship without them.
+
+## Required website files (separate HTML per page)
+
+Maintain under `website/` and deploy to **gh-pages** (not `main` root):
+
+| File | Purpose |
+|------|---------|
+| `website/support.html` | Support + download links (web, Android, iOS) |
+| `website/privacy.html` | Privacy policy (Google Play / App Store URL) |
+| `website/delete-account.html` | Delete-account URL for Play Console |
+
+Rules for HTML:
+- Use **HTTPS** links only in production URLs (`https://zub165.github.io/LocalNewsBreaker/...`)
+- One topic per file — no monolithic single-page app for legal/support content
+- Contact email: **zub165@yahoo.com**
+- `delete-account.html` must document the **built-in app** Delete Account flow first
+
+After editing `website/`, copy to `gh-pages` branch root and push; trigger GitHub Pages rebuild.
+
+## Required in-app features (Flutter)
+
+In `mobile/lib/main.dart` (or extracted auth module):
+
+1. **Account / profile UI** reachable from the app (e.g. World tab → profile icon)
+2. **Delete Account** button that calls backend `DELETE /api/v1/users/me/` via `Api.deleteAccount()`
+3. Clear user feedback on success (SnackBar) and session cleared locally
+
+Do not remove Delete Account when refactoring auth.
+
+## Pre-build verification (mandatory)
+
+Run before `flutter build appbundle` or `flutter build ipa`:
+
+```bash
+cd mobile && bash tool/verify_store_compliance.sh
+```
+
+Fix all failures before building release artifacts.
+
+## Release build commands (include API URL)
+
+```bash
+cd mobile
+bash tool/verify_store_compliance.sh
+flutter build appbundle --release --dart-define=API_BASE_URL=https://citizen-api.mywaitime.com
+flutter build ipa --release --dart-define=API_BASE_URL=https://citizen-api.mywaitime.com
+```
+
+## Play Console URLs (copy when submitting)
+
+- Privacy: `https://zub165.github.io/LocalNewsBreaker/privacy.html`
+- Delete account: `https://zub165.github.io/LocalNewsBreaker/delete-account.html`
+- Support: `https://zub165.github.io/LocalNewsBreaker/support.html`

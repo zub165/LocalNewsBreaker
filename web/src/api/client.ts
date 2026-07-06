@@ -5,7 +5,7 @@ import { hybridStore } from '../storage/hybridStore';
 /** Dev uses Vite proxy (`/api`). Production uses full API host from env. */
 export function apiOrigin(): string {
   if (import.meta.env.DEV) return '';
-  return (import.meta.env.VITE_API_BASE_URL || 'http://208.109.215.53:8004').replace(/\/$/, '');
+  return (import.meta.env.VITE_API_BASE_URL || 'https://citizen-api.mywaitime.com').replace(/\/$/, '');
 }
 
 /** HTTPS GitHub Pages feed snapshot (same origin — no mixed content). */
@@ -20,7 +20,7 @@ export function publicFeedUrl(): string {
 export function isHttpsWithHttpApi(): boolean {
   if (import.meta.env.DEV) return false;
   if (typeof window === 'undefined' || window.location.protocol !== 'https:') return false;
-  const api = import.meta.env.VITE_API_BASE_URL || 'http://208.109.215.53:8004';
+  const api = import.meta.env.VITE_API_BASE_URL || 'https://citizen-api.mywaitime.com';
   return api.startsWith('http:');
 }
 

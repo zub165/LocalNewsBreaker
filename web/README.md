@@ -9,7 +9,7 @@ Browser client for the LocalNewsBreaker Django API — same data as the Flutter 
 - **Report** — submit stories to the editor queue
 - **Saved** — bookmark stories in `localStorage`
 - **Sign in** — JWT auth; **My Stories** when logged in
-- **Hybrid storage** — cache feed offline; sync from `http://208.109.215.53:8004`
+- **Hybrid storage** — cache feed offline; sync from `https://citizen-api.mywaitime.com`
 
 ## Development
 
@@ -25,7 +25,7 @@ Optional `.env`:
 
 ```bash
 cp .env.example .env
-# VITE_API_BASE_URL=http://208.109.215.53:8004
+# VITE_API_BASE_URL=https://citizen-api.mywaitime.com
 ```
 
 ## Production build
@@ -47,9 +47,10 @@ If Pages still uses the **`gh-pages`** branch, either switch to **GitHub Actions
 
 ## HTTPS + API note
 
-GitHub Pages is **HTTPS**. If `VITE_API_BASE_URL` is **HTTP**, browsers block mixed content. For production web:
+Production API: **`https://citizen-api.mywaitime.com`**. GitHub Pages is **HTTPS** — the web app uses this host directly (no mixed-content block). For sign-in/submit from the browser, add on the API server:
 
-1. Put Nginx + SSL in front of your VPS API, or  
-2. Set `DJANGO_CORS_ALLOWED_ORIGINS=https://zub165.github.io` and use `VITE_API_BASE_URL=https://your-domain`
+`DJANGO_CORS_ALLOWED_ORIGINS=https://zub165.github.io`
+
+Read-only feed still falls back to same-origin `feed.json` if the API is unreachable.
 
 Local dev works via the Vite proxy (same-origin `/api`).

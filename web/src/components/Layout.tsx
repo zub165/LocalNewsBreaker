@@ -54,7 +54,7 @@ export function Layout({ darkMode, onToggleDark }: LayoutProps) {
       </header>
 
       <main className="app-main">
-        {!import.meta.env.DEV && window.location.protocol === 'https:' && (import.meta.env.VITE_API_BASE_URL || 'http://208.109.215.53:8004').startsWith('http:') ? (
+        {!import.meta.env.DEV && window.location.protocol === 'https:' && (import.meta.env.VITE_API_BASE_URL || 'https://citizen-api.mywaitime.com').startsWith('http:') ? (
           <div className="alert alert-info">
             HTTPS web app loads news from <strong>feed.json</strong> (publisher + dates, last 30 days).
             Direct API calls are blocked by the browser until you add SSL (HTTPS) on the VPS API.

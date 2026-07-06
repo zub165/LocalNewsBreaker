@@ -34,7 +34,7 @@ jobs:
       - name: Build React web app
         working-directory: web
         env:
-          VITE_API_BASE_URL: http://208.109.215.53:8004
+          VITE_API_BASE_URL: https://citizen-api.mywaitime.com
         run: |
           if [ -f package-lock.json ]; then npm ci; else npm install; fi
           npm run build
