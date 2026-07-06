@@ -40,9 +40,6 @@ export function FeedPage() {
       hybridStore.cacheFeed(data);
       setFromCache(false);
       setFromPublicFeed(source === 'public');
-      if (source === 'public') {
-        setError('Showing HTTPS public feed (last 30 days). Live API requires SSL on the VPS for direct browser access.');
-      }
     } catch (e) {
       const cached = hybridStore.getCachedFeed();
       if (cached.length) {

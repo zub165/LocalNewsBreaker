@@ -17,6 +17,13 @@ export function publicFeedUrl(): string {
   return '/LocalNewsBreaker/feed.json';
 }
 
+/** True when the web app is served from GitHub Pages (read-only feed via same-origin feed.json). */
+export function isGitHubPagesHost(): boolean {
+  if (import.meta.env.DEV) return false;
+  if (typeof window === 'undefined') return false;
+  return window.location.hostname.endsWith('github.io');
+}
+
 export function isHttpsWithHttpApi(): boolean {
   if (import.meta.env.DEV) return false;
   if (typeof window === 'undefined' || window.location.protocol !== 'https:') return false;
@@ -123,7 +130,7 @@ export const api = {
   ): Promise<{ stories: Story[]; source: FeedSource }> {
     const category = params.category;
 
-    if (isHttpsWithHttpApi()) {
+    if (isHttpsWithHttpApi() || isGitHubPagesHost()) {
       const stories = await fetchPublicFeed(category);
       return { stories, source: 'public' };
     }
