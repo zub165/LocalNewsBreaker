@@ -4,10 +4,16 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/website/feed.json"
-API="${API_BASE:-https://citizen-api.mywaitime.com}/api/v1/news/?status=published&limit=30"
+API="${API_BASE:-http://208.109.215.53:8004}/api/v1/news/?status=published&limit=30"
 
 echo "Fetching fresh stories from $API"
-RAW=$(curl -fsSL "$API")
+RAW=$(curl --fail --show-error --location \
+  --retry 5 \
+  --retry-delay 10 \
+  --retry-all-errors \
+  --connect-timeout 30 \
+  --max-time 180 \
+  "$API")
 python3 - <<'PY' "$RAW" "$OUT"
 import json, sys
 from datetime import datetime, timezone, timedelta
